@@ -3,7 +3,7 @@ CXXFLAGS = --std=c++17
 CXXFLAGS += -g -Wall -pedantic -Wextra
 
 
-main : main.o
+neat : main.o genotype.o
 	$(CXX) -lpthread -o $@ $^
 
 #library.o : library.cpp
@@ -13,5 +13,5 @@ main : main.o
 	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
-	rm -rf *.o main
+	rm -rf *.o neat
 
