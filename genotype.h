@@ -27,7 +27,6 @@ struct ConnectGene
     size_t out;
     double weight;
     bool enabled = true;
-
     // Whenever a new gene appears (through structural mutation), a global
     // innovation number is incremented and assigned to that gene.
     // The innovation numbers thus represent a chronology of the appearance
@@ -50,7 +49,7 @@ public:
 
     void mutate_weights(double mutation_prob, double perturbation_prob);
     void mutate_add_connection();
-    void mutate_add_node();
+    void mutate_add_node(double add_prob);
 
 private:
     size_t inputs;
