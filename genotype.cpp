@@ -23,6 +23,7 @@ Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
         for (size_t j = 0; j < outputs; ++j)
             connections.push_back(ConnectGene{i, j, innov++});
 
+    // TODO: static distrib.
     std::uniform_real_distribution<double> real_dist(-1.0, 1.0);
     for (auto &c : connections)
         c.weight = real_dist(rng);
@@ -71,8 +72,30 @@ double Genotype::eval(size_t idx)
     return nodes[idx].value;
 }
 
-void Genotype::mutate_weight()
+// There was an 80% chance of a genome having its connection weights mutated,
+// in which case each weight had a 90% chance of being uniformly perturbed
+// and a 10% chance of being assigned a new random value.
+// brak informacji w oryginalnej pracy, jak duże jest zabużenie
+// można to sprawdzić w oryginalnej implementacji (tu założenie: +-0.1)
+void Genotype::mutate_weights(double mutation_prob, double perturbation_prob)
 {
+    std::uniform_real_distribution<double> rnd_weight(-1.0, 1.0);
+    std::uniform_real_distribution<double> prob(0, 1.0);
+
+    for (auto &c : connections)
+    {
+        if (c.enabled)
+        {
+            if (mutation_prob > prob(rng)) // zachodzi mutacja
+            {
+                if (perturbation_prob > prob(rng)) // tylko perturbacja
+
+                    c.weight += 0.1 * rnd_weight(rng);
+                else // nowa losowa waga z pstwem (1-perturbation_prob)
+                    c.weight = rnd_weight(rng);
+            }
+        }
+    }
 }
 
 // In the add node mutation, an existing connection is split and the new node

@@ -48,7 +48,7 @@ public:
     Genotype(const size_t inputs, const size_t outputs);
     std::vector<double> operator()(std::vector<double> &in);
 
-    void mutate_weight();
+    void mutate_weights(double mutation_prob, double perturbation_prob);
     void mutate_add_connection();
     void mutate_add_node();
 
