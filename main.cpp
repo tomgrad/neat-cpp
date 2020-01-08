@@ -4,24 +4,10 @@
 // C++ implementation by tomasz.gradowski@pw.edu.pl
 
 #include <iostream>
-#include <array>
-#include <cmath> // exp
 
 #include "genotype.h"
 
 using namespace std;
-
-class Pool
-{
-public:
-    Pool(size_t inputs, size_t outputs);
-    std::vector<Genotype> population;
-    void mate(size_t, size_t);
-};
-
-Pool::Pool(size_t inputs, size_t outputs)
-{
-}
 
 int main(/* int argv, char *argc[] */)
 {
@@ -33,11 +19,4 @@ int main(/* int argv, char *argc[] */)
     for (auto o : out)
         cout << o << ' ';
     cout << endl;
-
-    // auto rand_uni_weight = [&]() {
-    //     std::uniform_real_distribution<double> distribution(-1.0, 1.0);
-    //     return distribution(rng);
-    // };
-
-    // std::cout << rand_uni_weight() << std::endl;
 }
