@@ -3,7 +3,7 @@
 #include <vector>
 #include <random>
 
-// sigmoidal transfer function
+// transfer function
 double f(const double x, const double slope);
 
 enum class GeneType
@@ -39,12 +39,6 @@ struct ConnectGene
     ConnectGene(size_t in, size_t out, unsigned innov) : in(in), out(out), innov(innov)
     {
     }
-
-    // void randomize()
-    // {
-    //     std::uniform_real_distribution<double> real_dist(-1.0, 1.0);
-    //     weight = real_dist(rng);
-    // }
 };
 
 class Genotype
@@ -52,21 +46,18 @@ class Genotype
 
 public:
     Genotype(const size_t inputs, const size_t outputs);
+    std::vector<double> operator()(std::vector<double> &in);
 
     void mutate_weight();
     void mutate_add_connection();
     void mutate_add_node();
-    void input(std::vector<double> in);
-    std::vector<double> output();
-    void eval();
-
-    std::vector<NodeGene> nodes;
-    std::vector<ConnectGene> connections;
 
 private:
-    static std::mt19937 rng;
     size_t inputs;
     size_t outputs;
     unsigned next_innov_number = 0;
+    std::vector<NodeGene> nodes;
+    std::vector<ConnectGene> connections;
     double eval(size_t idx);
+    static std::mt19937 rng;
 };

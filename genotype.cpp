@@ -1,6 +1,5 @@
-// #include <iostream>
-
 #include "genotype.h"
+
 using namespace std;
 
 // sigmoidal transfer function
@@ -29,29 +28,29 @@ Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
         c.weight = real_dist(rng);
 }
 
-void Genotype::input(vector<double> in)
+vector<double> Genotype::operator()(vector<double> &in)
 {
+    // copy inputs
     for (size_t i = 0; i < inputs; ++i)
         nodes[i].value = in[i];
     nodes[inputs].value = 1; // bias
-}
 
-vector<double> Genotype::output()
-{
+    // forward propagation
+    for (auto &n : nodes)
+        n.cached = false;
+    for (size_t i = inputs + 1; i < inputs + 1 + outputs; ++i)
+        eval(i);
+
+    // return outputs
     vector<double> out(outputs);
     for (size_t i = 0; i < outputs; ++i)
         out[i] = nodes[i + inputs + 1].value;
     return out;
 }
-void Genotype::eval()
-{
-    // TODO: zamienic na operator() i scalić z input(*in)
-    for (auto &n : nodes)
-        n.cached = false;
-}
 
 double Genotype::eval(size_t idx)
 {
+    // recursive function
     if (nodes[idx].cached)
         return nodes[idx].value;
 

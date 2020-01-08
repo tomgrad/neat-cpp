@@ -28,9 +28,7 @@ int main(/* int argv, char *argc[] */)
     const size_t inputs = 2, outputs = 1;
     Genotype G(inputs, outputs);
     vector<double> in{0, 1};
-    G.input(in);
-    G.eval();
-    auto out = G.output();
+    auto out = G(in);
 
     for (auto o : out)
         cout << o << ' ';
