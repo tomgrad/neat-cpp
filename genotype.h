@@ -48,7 +48,7 @@ public:
     std::vector<double> operator()(std::vector<double> &in);
 
     void mutate_weights(double mutation_prob, double perturbation_prob);
-    void mutate_add_connection();
+    void mutate_add_connection(double add_con_prob);
     void mutate_add_node(double add_prob);
 
 private:

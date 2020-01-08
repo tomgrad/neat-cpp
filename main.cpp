@@ -14,6 +14,8 @@ int main(/* int argv, char *argc[] */)
     const size_t inputs = 2, outputs = 1;
     Genotype G(inputs, outputs);
     G.mutate_weights(0.8, 0.9);
+    G.mutate_add_connection(0.5);
+    G.mutate_add_node(0.5);
     vector<double> in{0, 1};
     auto out = G(in);
 

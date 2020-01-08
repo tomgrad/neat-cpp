@@ -1,3 +1,5 @@
+#include <algorithm> // shuffle
+#include <iostream>
 #include "genotype.h"
 
 using namespace std;
@@ -137,6 +139,31 @@ void Genotype::mutate_add_node(double add_prob)
 // 0.05. In the larger population, the probability of adding a new link was
 // 0.3, because a larger population can tolerate a larger number
 // of prospective species and greater topological diversity.
-void Genotype::mutate_add_connection()
+void Genotype::mutate_add_connection(double add_con_prob)
 {
+    std::uniform_real_distribution<double> prob(0, 1.0);
+    if (add_con_prob < prob(rng)) // brak mutacji z pstwem (1prob)
+        return;
+
+    // find 2 unconnected nodes
+    // sprawdzamy wszystkie pary w losowej kolejności
+    std::vector<size_t> idx(nodes.size());
+    iota(begin(idx), end(idx), 0);
+    auto jdx = idx;
+    shuffle(begin(idx), end(idx), rng);
+    shuffle(begin(jdx), end(jdx), rng);
+
+    for (auto i : idx)
+        for (auto j : jdx)
+        {
+            auto it = find_if(begin(connections), end(connections), [&](auto c) { return (c.in == i && c.out == j); });
+            if (it != end(connections)) // znaleziono
+            {
+                auto new_edge = ConnectGene(i, j, next_innov_number++);
+                std::uniform_real_distribution<double> rnd_weight(-1.0, 1.0);
+                new_edge.weight = rnd_weight(rng);
+                connections.emplace_back(new_edge);
+                return;
+            }
+        }
 }
