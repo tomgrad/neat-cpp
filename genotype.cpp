@@ -106,10 +106,10 @@ void Genotype::mutate_weights(double mutation_prob, double perturbation_prob)
 // into the new node receives a weight of 1, and the new connection leading
 // out receives the same weight as the old connection.
 // (...) the probability of adding a new node was 0.03
-void Genotype::mutate_add_node(double add_prob)
+void Genotype::mutate_add_node(double add_node_prob)
 {
     std::uniform_real_distribution<double> prob(0, 1.0);
-    if (add_prob < prob(rng)) // brak mutacji z pstwem (1-add_prob)
+    if (add_node_prob < prob(rng)) // brak mutacji z pstwem (1-add_node_prob)
         return;
 
     std::uniform_int_distribution<size_t> rnd_link(0, connections.size());

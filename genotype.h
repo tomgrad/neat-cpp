@@ -49,7 +49,7 @@ public:
 
     void mutate_weights(double mutation_prob, double perturbation_prob);
     void mutate_add_connection(double add_con_prob);
-    void mutate_add_node(double add_prob);
+    void mutate_add_node(double add_node_prob);
 
 private:
     size_t inputs;
