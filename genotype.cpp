@@ -11,6 +11,7 @@ double f(const double x, const double slope = 4.9)
 }
 
 mt19937 Genotype::rng = mt19937();
+unsigned Genotype::next_innov_number = 0;
 
 Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
                                                                 outputs(outputs)
@@ -20,11 +21,13 @@ Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
     for (size_t i = 0; i < outputs; ++i)
         nodes.push_back(NodeGene{inputs + i, GeneType::Output});
 
-    // unsigned innov = 0;
     for (size_t i = 0; i < inputs + 1; ++i) // inputs + bias
         for (size_t j = 0; j < outputs; ++j)
             connections.push_back(ConnectGene(i, j + inputs + 1, next_innov_number++));
+}
 
+void Genotype::randomize()
+{
     // TODO: static distrib.
     std::uniform_real_distribution<double> real_dist(-1.0, 1.0);
     for (auto &c : connections)

@@ -15,7 +15,7 @@ enum class GeneType
 
 struct NodeGene
 {
-    size_t id;
+    size_t id; // TODO: usunąć
     GeneType type = GeneType::Hidden;
     double value = 0;
     bool cached = false;
@@ -47,16 +47,18 @@ public:
     Genotype(const size_t inputs, const size_t outputs);
     std::vector<double> operator()(std::vector<double> &in);
 
+    void randomize();
+
     void mutate_weights(double mutation_prob, double perturbation_prob);
     void mutate_add_connection(double add_con_prob);
     void mutate_add_node(double add_node_prob);
+    std::vector<ConnectGene> connections;
+    std::vector<NodeGene> nodes;
+    static std::mt19937 rng;
 
 private:
     size_t inputs;
     size_t outputs;
-    unsigned next_innov_number = 0;
-    std::vector<NodeGene> nodes;
-    std::vector<ConnectGene> connections;
+    static unsigned next_innov_number;
     double eval(size_t idx);
-    static std::mt19937 rng;
 };

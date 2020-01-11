@@ -5,8 +5,8 @@
 class Pool
 {
 public:
-    Pool(size_t population_size, size_t inputs, size_t outputs);
-    void mate(size_t, size_t);
+    Pool(const size_t population_size, const size_t inputs, const size_t outputs);
+    void mate(const size_t parent1, const size_t parent2);
 
 private:
     size_t population_size;
