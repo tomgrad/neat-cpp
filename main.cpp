@@ -16,12 +16,17 @@ int main(/* int argv, char *argc[] */)
     // auto pool = Pool(12, inputs, outputs);
 
     // cout << p << endl;
-    int p[2] = {2, 3};
-    // Genotype G(inputs, outputs);
+    Genotype G1(inputs, outputs);
+    Genotype G2 = G1;
 
     // G.mutate_weights(0.8, 0.9);
+    G1.mutate_add_node(0.5);
+    G2.mutate_add_node(0.5);
+
     // G.mutate_add_connection(0.5);
-    // G.mutate_add_node(0.5);
+    cout << G1 << endl;
+    cout << G2 << endl;
+
     // vector<double> in{0, 1};
     // auto out = G(in);
 

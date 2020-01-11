@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <random>
+#include <vector>
 
 // transfer function
 double f(const double x, const double slope);
@@ -62,3 +62,5 @@ private:
     static unsigned next_innov_number;
     double eval(size_t idx);
 };
+
+std::ostream &operator<<(std::ostream &os, const Genotype &G);

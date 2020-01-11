@@ -1,6 +1,6 @@
+#include "genotype.h"
 #include <algorithm> // shuffle
 #include <iostream>
-#include "genotype.h"
 
 using namespace std;
 
@@ -127,7 +127,7 @@ void Genotype::mutate_add_node(double add_node_prob)
     old_edge->enabled = false;
 
     auto edge1 = ConnectGene(old_edge->in, new_id, next_innov_number++);
-    auto edge2 = ConnectGene(new_id, old_edge->in, next_innov_number++);
+    auto edge2 = ConnectGene(new_id, old_edge->out, next_innov_number++);
 
     edge1.weight = old_edge->weight;
     edge2.weight = 1;
@@ -169,4 +169,15 @@ void Genotype::mutate_add_connection(double add_con_prob)
                 return;
             }
         }
+}
+
+std::ostream &operator<<(std::ostream &os, const Genotype &G)
+{
+    auto flag = [&](bool enabled) {
+        return enabled ? " " : "d";
+    };
+
+    for (auto &c : G.connections)
+        os << c.innov << flag(c.enabled) << ": " << c.in << "->" << c.out << " | ";
+    return os;
 }
