@@ -35,7 +35,7 @@ void Genotype::randomize()
         c.weight = real_dist(rng);
 }
 
-vector<double> Genotype::operator()(vector<double> &in)
+vector<double> Genotype::operator()(const vector<double> &in)
 {
     // copy inputs
     for (size_t i = 0; i < inputs; ++i)
@@ -52,6 +52,10 @@ vector<double> Genotype::operator()(vector<double> &in)
     vector<double> out(outputs);
     for (size_t i = 0; i < outputs; ++i)
         out[i] = nodes[i + inputs + 1].value;
+
+    for (auto &o : out)
+        o = o > 0.5 ? 1 : 0;
+
     return out;
 }
 

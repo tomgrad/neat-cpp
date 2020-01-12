@@ -12,7 +12,7 @@ Pool::Pool(const size_t population_size, const size_t inputs, const size_t outpu
     for (auto &g : population)
         g.randomize();
 
-    fitness.resize(population_size, 0);
+    // fitness.resize(population_size, 0);
     Genotype::num_nodes = inputs + outputs + 1;
 }
 
@@ -25,7 +25,7 @@ Pool::Pool(const size_t population_size, const size_t inputs, const size_t outpu
 void Pool::mate(size_t parent1, size_t parent2)
 {
     uniform_int_distribution<int> rnd(0, 1);
-    if (fitness[parent1] < fitness[parent2])
+    if (population[parent1].fitness < population[parent2].fitness)
         swap(parent1, parent2);
 
     const auto &p1 = population[parent1];
@@ -47,7 +47,7 @@ void Pool::mate(size_t parent1, size_t parent2)
     }
 
     // dziedziczone są nieprzekrywające się geny od obu rodziców z równym dopasowaniem
-    if (fitness[parent1] == fitness[parent2])
+    if (population[parent1].fitness == population[parent2].fitness)
         for (const auto &c : p2.connections)
         {
 
@@ -80,11 +80,15 @@ void Pool::info()
 
 void Pool::epoch()
 {
+    curr_gen.clear();
     for (size_t i = 0; i < population.size(); ++i)
         mutate_add_node(i);
     for (size_t i = 0; i < population.size(); ++i)
         mutate_add_connection(i);
 
+    mate(0, 1);
+    mate(2, 3);
+    check_integrity();
 }
 
 // There was an 80% chance of a genome having its connection weights mutated,
@@ -176,32 +180,81 @@ void Pool::mutate_add_connection(size_t n)
             auto it = find_if(begin(G.connections), end(G.connections), [&](auto c) { return (c.in == i && c.out == j); });
             if (it != end(G.connections)) // znaleziono
             {
-
-                // sprawdzamy, czy ta cecha już istnieje w populacji, by ew. skopiować innov
-                for (const auto &H : population)
-                {
-                    const auto it = find_if(begin(H.connections), end(H.connections), [&](auto x) { return x.in == i && x.out == j; });
-                    if (it != end(H.connections)) // jest już taka cecha, więc kopiujemy innov
-                    {
-                        innov = it->innov;
-                        break; // nie musimy już dalej czekać
-                    }
-                    else
-                        innov = G.next_innov_number++;
-                }
+                // sprawdzamy, czy ta cecha już pojawiła się w aktualnym pokoleniu, by ew. skopiować innov
+                const auto it = find_if(begin(curr_gen), end(curr_gen), [&](auto x) { return x.in == i && x.out == j; });
+                if (it != end(curr_gen)) // jest już taka cecha, więc kopiujemy innov
+                    innov = it->innov;
+                else
+                    innov = G.next_innov_number++;
 
                 auto new_edge = ConnectGene(i, j, innov);
                 std::uniform_real_distribution<double> rnd_weight(-1.0, 1.0);
                 new_edge.weight = rnd_weight(rng);
                 G.connections.emplace_back(new_edge);
-                return;
+                curr_gen.push_back(new_edge); // śledzimy zmiany w aktualnej generacji
+                return;                       // tylko jedno nowe połączenie na epokę
             }
         }
 }
-// TODO: sprawdzic, czy już istnieją w populacji krawędzie łączące te same węzły i skopiować innov
-// albo dodajemy kolejne innov, a potem duplikaton nadajemy ten sam nr innov
-// uwaga na numery węzłów
 
+// fix, actually...
 void Pool::check_integrity()
 {
+    for (auto &G : population)
+    {
+        sort(
+            begin(G.connections),
+            end(G.connections),
+            [&](auto x, auto y) { return x.innov < y.innov; });
+
+        // szukamy duplikatów krawędzi u osobnika
+        auto cut = unique(
+            begin(G.connections),
+            end(G.connections),
+            [&](auto x, auto y) { return x.in == y.in && x.out == y.out; });
+
+        // unique tylko przesuwa duplikaty na koniec
+        G.connections.resize(distance(begin(G.connections), cut));
+
+        // uzupełniamy liczbę węzłów po krzyżowaniu
+        auto num_nodes = max_element(
+            begin(G.connections),
+            end(G.connections),
+            [&](auto x, auto y) { return x.in < y.in; });
+        G.nodes.resize(num_nodes->in);
+    }
+}
+
+void Pool::selection()
+{
+    // evaluate
+    calc_fitness();
+    // sort
+    sort(
+        begin(population),
+        end(population),
+        [&](auto x, auto y) { return x.fitness > y.fitness; });
+
+    // remove loosers
+    population.resize(population_size);
+}
+
+void Pool::calc_fitness()
+{
+    // hardcoded XOR
+    auto problem = [](auto x) {
+        return static_cast<int>(x[0]) ^ static_cast<int>(x[1]);
+    };
+
+    vector<double> ins[4] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+
+    for (auto &G : population)
+    {
+        G.fitness = 0;
+        for (const auto &in : ins)
+        {
+            auto expected = problem(in);
+            G.fitness -= (G(in)[0] - expected) * (G(in)[0] - expected);
+        }
+    }
 }

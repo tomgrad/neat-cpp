@@ -15,7 +15,8 @@ private:
     size_t inputs;
     size_t outputs;
     std::vector<Genotype> population;
-    std::vector<double> fitness;
+    // std::vector<double> fitness;
+    std::vector<ConnectGene> curr_gen; // track new innov numbers
     double mutation_prob = 0.8;
     double perturbation_prob = 0.9;
     double add_node_prob = 1;
@@ -26,7 +27,11 @@ private:
     void mutate_add_connection(size_t n);
     void mutate_add_node(size_t n);
     void check_integrity();
+    void selection();
+    void calc_fitness();
+
     std::mt19937 rng;
+    // std::function callback;
 
     // unsigned next_innov_number = 0;
 };

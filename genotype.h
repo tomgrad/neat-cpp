@@ -15,10 +15,11 @@ enum class GeneType
 
 struct NodeGene
 {
-    size_t id; // TODO: usunąć
+    size_t id = 0; // TODO: usunąć
     GeneType type = GeneType::Hidden;
     double value = 0;
     bool cached = false;
+    // NodeGene(){};
 };
 
 struct ConnectGene
@@ -38,6 +39,7 @@ struct ConnectGene
     ConnectGene(size_t in, size_t out, unsigned innov) : in(in), out(out), innov(innov)
     {
     }
+    ConnectGene() {} // wymagane przez connections.resize()
 };
 
 class Genotype
@@ -45,7 +47,8 @@ class Genotype
 
 public:
     Genotype(const size_t inputs, const size_t outputs);
-    std::vector<double> operator()(std::vector<double> &in);
+    Genotype(){}; // wymagane przez population.resize() w selekcji
+    std::vector<double> operator()(const std::vector<double> &in);
 
     void randomize();
 
@@ -54,6 +57,7 @@ public:
     static std::mt19937 rng;
     static size_t num_nodes;
     static unsigned next_innov_number;
+    double fitness;
 
 private:
     size_t inputs;

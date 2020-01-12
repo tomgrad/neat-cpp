@@ -6,17 +6,25 @@
 #include <iostream>
 
 #include "pool.h"
-
+#include <functional>
 using namespace std;
 
 int main(/* int argv, char *argc[] */)
 {
+
+    // auto XOR = [&](auto x, auto y) { return x + y; };
+
     const size_t inputs = 2, outputs = 1;
 
     auto pool = Pool(4, inputs, outputs);
+    // auto fitness=[&]
     pool.info();
     pool.epoch();
     pool.info();
+
+    pool.epoch();
+    pool.info();
+
     // pool.mate(0, 1);
     // pool.mate(2, 3);
 
