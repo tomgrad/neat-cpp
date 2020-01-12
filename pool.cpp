@@ -82,6 +82,9 @@ void Pool::epoch()
 {
     for (size_t i = 0; i < population.size(); ++i)
         mutate_add_node(i);
+    for (size_t i = 0; i < population.size(); ++i)
+        mutate_add_connection(i);
+
 }
 
 // There was an 80% chance of a genome having its connection weights mutated,
@@ -166,14 +169,28 @@ void Pool::mutate_add_connection(size_t n)
     auto jdx = idx;
     shuffle(begin(idx), end(idx), rng);
     shuffle(begin(jdx), end(jdx), rng);
-
+    unsigned innov = 0;
     for (auto i : idx)
         for (auto j : jdx)
         {
             auto it = find_if(begin(G.connections), end(G.connections), [&](auto c) { return (c.in == i && c.out == j); });
             if (it != end(G.connections)) // znaleziono
             {
-                auto new_edge = ConnectGene(i, j, G.next_innov_number++);
+
+                // sprawdzamy, czy ta cecha już istnieje w populacji, by ew. skopiować innov
+                for (const auto &H : population)
+                {
+                    const auto it = find_if(begin(H.connections), end(H.connections), [&](auto x) { return x.in == i && x.out == j; });
+                    if (it != end(H.connections)) // jest już taka cecha, więc kopiujemy innov
+                    {
+                        innov = it->innov;
+                        break; // nie musimy już dalej czekać
+                    }
+                    else
+                        innov = G.next_innov_number++;
+                }
+
+                auto new_edge = ConnectGene(i, j, innov);
                 std::uniform_real_distribution<double> rnd_weight(-1.0, 1.0);
                 new_edge.weight = rnd_weight(rng);
                 G.connections.emplace_back(new_edge);
@@ -185,4 +202,6 @@ void Pool::mutate_add_connection(size_t n)
 // albo dodajemy kolejne innov, a potem duplikaton nadajemy ten sam nr innov
 // uwaga na numery węzłów
 
-void Pool::check_integrity() {}
+void Pool::check_integrity()
+{
+}
