@@ -49,17 +49,14 @@ public:
 
     void randomize();
 
-    void mutate_weights(double mutation_prob, double perturbation_prob);
-    void mutate_add_connection(double add_con_prob);
-    void mutate_add_node(double add_node_prob);
     std::vector<ConnectGene> connections;
     std::vector<NodeGene> nodes;
     static std::mt19937 rng;
+    static unsigned next_innov_number;
 
 private:
     size_t inputs;
     size_t outputs;
-    static unsigned next_innov_number;
     double eval(size_t idx);
 };
 

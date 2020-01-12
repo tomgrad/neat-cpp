@@ -13,19 +13,26 @@ int main(/* int argv, char *argc[] */)
 {
     const size_t inputs = 2, outputs = 1;
 
-    // auto pool = Pool(12, inputs, outputs);
+    auto pool = Pool(4, inputs, outputs);
+    pool.info();
+    pool.epoch();
+    pool.info();
+    pool.mate(0, 1);
+    pool.mate(2, 3);
+
+    pool.info();
 
     // cout << p << endl;
-    Genotype G1(inputs, outputs);
-    Genotype G2 = G1;
+    // Genotype G1(inputs, outputs);
+    // Genotype G2 = G1;
 
     // G.mutate_weights(0.8, 0.9);
-    G1.mutate_add_node(0.5);
-    G2.mutate_add_node(0.5);
+    // G1.mutate_add_node(0.5);
+    // G2.mutate_add_node(0.5);
 
     // G.mutate_add_connection(0.5);
-    cout << G1 << endl;
-    cout << G2 << endl;
+    // cout << G1 << endl;
+    // cout << G2 << endl;
 
     // vector<double> in{0, 1};
     // auto out = G(in);
