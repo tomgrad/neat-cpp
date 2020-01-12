@@ -18,9 +18,9 @@ Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
                                                                 outputs(outputs)
 {
     for (size_t i = 0; i < inputs + 1; ++i) // inputs + bias
-        nodes.push_back(NodeGene{i, GeneType::Input});
+        nodes.push_back(NodeGene{GeneType::Input});
     for (size_t i = 0; i < outputs; ++i)
-        nodes.push_back(NodeGene{inputs + i, GeneType::Output});
+        nodes.push_back(NodeGene{GeneType::Output});
 
     for (size_t i = 0; i < inputs + 1; ++i) // inputs + bias
         for (size_t j = 0; j < outputs; ++j)
@@ -53,9 +53,6 @@ vector<double> Genotype::operator()(const vector<double> &in)
     for (size_t i = 0; i < outputs; ++i)
         out[i] = nodes[i + inputs + 1].value;
 
-    for (auto &o : out)
-        o = o > 0.5 ? 1 : 0;
-
     return out;
 }
 
@@ -87,7 +84,7 @@ std::ostream &operator<<(std::ostream &os, const Genotype &G)
     auto flag = [&](bool enabled) {
         return enabled ? " " : "d";
     };
-
+    os << G.fitness << " ";
     for (auto &c : G.connections)
         os << c.innov << flag(c.enabled) << ": " << c.in << "->" << c.out << " | ";
     return os;

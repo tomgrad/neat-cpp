@@ -65,7 +65,7 @@ void Pool::mate(size_t parent1, size_t parent2)
     // uzupełniamy geny węzłów
     auto nodes = max(p1.nodes.size(), p2.nodes.size());
     for (size_t i = 0; i < nodes - offspring.nodes.size(); ++i)
-        offspring.nodes.push_back(NodeGene{0});
+        offspring.nodes.push_back(NodeGene{});
 
     population.emplace_back(offspring);
 }
@@ -81,14 +81,23 @@ void Pool::info()
 void Pool::epoch()
 {
     curr_gen.clear();
-    for (size_t i = 0; i < population.size(); ++i)
-        mutate_add_node(i);
-    for (size_t i = 0; i < population.size(); ++i)
-        mutate_add_connection(i);
 
-    mate(0, 1);
-    mate(2, 3);
+    for (size_t i = 0; i < population.size(); ++i)
+    {
+        mutate_add_node(i);
+        mutate_add_connection(i);
+        mutate_weights(i);
+    } // for (size_t i = 0; i < population.size(); ++i)
+
+    std::vector<size_t> idx(population_size);
+    iota(begin(idx), end(idx), 0);
+    shuffle(begin(idx), end(idx), rng);
+
+    for (size_t i = 0; i < population_size; ++i)
+        mate(i, i + 1);
+
     check_integrity();
+    selection();
 }
 
 // There was an 80% chance of a genome having its connection weights mutated,
@@ -135,7 +144,7 @@ void Pool::mutate_add_node(size_t n)
 
     auto new_id = G.num_nodes++;
     G.nodes.size();
-    G.nodes.push_back(NodeGene{new_id});
+    G.nodes.push_back(NodeGene{});
     ConnectGene *old_edge;
     do
         old_edge = &G.connections[rnd_link(rng)];
@@ -220,8 +229,8 @@ void Pool::check_integrity()
         auto num_nodes = max_element(
             begin(G.connections),
             end(G.connections),
-            [&](auto x, auto y) { return x.in < y.in; });
-        G.nodes.resize(num_nodes->in);
+            [&](auto x, auto y) { return x.out < y.out; });
+        G.nodes.resize(num_nodes->out + 1);
     }
 }
 

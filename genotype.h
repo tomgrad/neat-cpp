@@ -15,11 +15,11 @@ enum class GeneType
 
 struct NodeGene
 {
-    size_t id = 0; // TODO: usunąć
     GeneType type = GeneType::Hidden;
     double value = 0;
     bool cached = false;
     // NodeGene(){};
+    // size_t id = 0; // TODO: usunąć
 };
 
 struct ConnectGene

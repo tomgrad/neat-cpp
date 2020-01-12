@@ -19,8 +19,7 @@ private:
     std::vector<ConnectGene> curr_gen; // track new innov numbers
     double mutation_prob = 0.8;
     double perturbation_prob = 0.9;
-    double add_node_prob = 1;
-    // 0.03;
+    double add_node_prob = 0.03;
     double add_con_prob = 0.05;
 
     void mutate_weights(size_t n);
