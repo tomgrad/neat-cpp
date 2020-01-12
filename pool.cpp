@@ -13,6 +13,7 @@ Pool::Pool(const size_t population_size, const size_t inputs, const size_t outpu
         g.randomize();
 
     fitness.resize(population_size, 0);
+    Genotype::num_nodes = inputs + outputs + 1;
 }
 
 // Matching up genomes for different network topologies using innovation

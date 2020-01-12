@@ -1,6 +1,6 @@
+#include "genotype.h"
 #include <algorithm> // shuffle
 #include <iostream>
-#include "genotype.h"
 
 using namespace std;
 
@@ -12,6 +12,7 @@ double f(const double x, const double slope = 4.9)
 
 mt19937 Genotype::rng = mt19937();
 unsigned Genotype::next_innov_number = 0;
+size_t Genotype::num_nodes = 0;
 
 Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
                                                                 outputs(outputs)

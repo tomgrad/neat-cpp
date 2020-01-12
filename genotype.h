@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <random>
+#include <vector>
 
 // transfer function
 double f(const double x, const double slope);
@@ -55,6 +55,7 @@ public:
     std::vector<ConnectGene> connections;
     std::vector<NodeGene> nodes;
     static std::mt19937 rng;
+    static size_t num_nodes;
 
 private:
     size_t inputs;
