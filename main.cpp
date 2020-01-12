@@ -17,10 +17,10 @@ int main(/* int argv, char *argc[] */)
     pool.info();
     pool.epoch();
     pool.info();
-    pool.mate(0, 1);
-    pool.mate(2, 3);
+    // pool.mate(0, 1);
+    // pool.mate(2, 3);
 
-    pool.info();
+    // pool.info();
 
     // cout << p << endl;
     // Genotype G1(inputs, outputs);

@@ -25,6 +25,7 @@ private:
     void mutate_weights(size_t n);
     void mutate_add_connection(size_t n);
     void mutate_add_node(size_t n);
+    void check_integrity();
     std::mt19937 rng;
 
     // unsigned next_innov_number = 0;

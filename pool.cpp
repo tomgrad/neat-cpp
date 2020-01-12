@@ -126,7 +126,8 @@ void Pool::mutate_add_node(size_t n)
 
     std::uniform_int_distribution<size_t> rnd_link(0, G.connections.size() - 1);
 
-    auto new_id = G.nodes.size();
+    auto new_id = G.num_nodes++;
+    G.nodes.size();
     G.nodes.push_back(NodeGene{new_id});
     ConnectGene *old_edge;
     do
@@ -137,10 +138,6 @@ void Pool::mutate_add_node(size_t n)
 
     auto edge1 = ConnectGene(old_edge->in, new_id, G.next_innov_number++);
     auto edge2 = ConnectGene(new_id, old_edge->out, G.next_innov_number++);
-
-    // TODO: sprawdzic, czy już istnieją w populacji krawędzie łączące te same węzły i skopiować innov
-    // albo dodajemy kolejne innov, a potem duplikaton nadajemy ten sam nr innov
-    // uwaga na numery węzłów
 
     edge1.weight = old_edge->weight;
     edge2.weight = 1;
@@ -184,3 +181,8 @@ void Pool::mutate_add_connection(size_t n)
             }
         }
 }
+// TODO: sprawdzic, czy już istnieją w populacji krawędzie łączące te same węzły i skopiować innov
+// albo dodajemy kolejne innov, a potem duplikaton nadajemy ten sam nr innov
+// uwaga na numery węzłów
+
+void Pool::check_integrity() {}
