@@ -17,9 +17,7 @@ struct NodeGene
 {
     GeneType type = GeneType::Hidden;
     double value = 0;
-    bool cached = false;
-    // NodeGene(){};
-    // size_t id = 0; // TODO: usunąć
+    double local_field = 0;
 };
 
 struct ConnectGene
@@ -34,11 +32,9 @@ struct ConnectGene
     // of every gene in the system. (...) In the future, whenever these
     // genomes mate, the offspring will inherit the same innovation numbers
     // on each gene; innovation numbers are never changed.
-    int innov; // innovation number
+    unsigned innov; // innovation number
 
-    ConnectGene(size_t in, size_t out, unsigned innov) : in(in), out(out), innov(innov)
-    {
-    }
+    ConnectGene(size_t in, size_t out, unsigned innov) : in(in), out(out), innov(innov) {}
     ConnectGene() {} // wymagane przez connections.resize()
 };
 
@@ -55,14 +51,12 @@ public:
     std::vector<ConnectGene> connections;
     std::vector<NodeGene> nodes;
     static std::mt19937 rng;
-    static size_t num_nodes;
     static unsigned next_innov_number;
-    double fitness;
+    double fitness = -1;
 
 private:
     size_t inputs;
     size_t outputs;
-    double eval(size_t idx);
 };
 
 std::ostream &operator<<(std::ostream &os, const Genotype &G);

@@ -12,7 +12,6 @@ double f(const double x, const double slope = 4.9)
 
 mt19937 Genotype::rng = mt19937();
 unsigned Genotype::next_innov_number = 0;
-size_t Genotype::num_nodes = 0;
 
 Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
                                                                 outputs(outputs)
@@ -30,23 +29,27 @@ Genotype::Genotype(const size_t inputs, const size_t outputs) : inputs(inputs),
 void Genotype::randomize()
 {
     // TODO: static distrib.
-    std::uniform_real_distribution<double> real_dist(-1.0, 1.0);
+    std::uniform_real_distribution<double> real_dist(-1, 1);
     for (auto &c : connections)
         c.weight = real_dist(rng);
 }
 
 vector<double> Genotype::operator()(const vector<double> &in)
 {
-    // copy inputs
+    // // copy inputs
     for (size_t i = 0; i < inputs; ++i)
         nodes[i].value = in[i];
     nodes[inputs].value = 1; // bias
 
-    // forward propagation
     for (auto &n : nodes)
-        n.cached = false;
-    for (size_t i = inputs + 1; i < inputs + 1 + outputs; ++i)
-        eval(i);
+        n.local_field = 0;
+
+    for (auto &c : connections)
+        if (c.enabled)
+            nodes[c.out].local_field += c.weight * nodes[c.in].value;
+
+    for (auto &n : nodes)
+        n.value = f(n.local_field);
 
     // return outputs
     vector<double> out(outputs);
@@ -54,29 +57,6 @@ vector<double> Genotype::operator()(const vector<double> &in)
         out[i] = nodes[i + inputs + 1].value;
 
     return out;
-}
-
-double Genotype::eval(size_t idx)
-{
-    // recursive function
-    if (nodes[idx].cached)
-        return nodes[idx].value;
-
-    if (idx <= inputs) // wezly wejsciowe (sensory) + bias
-    {
-        nodes[idx].cached = true;
-        return nodes[idx].value;
-    }
-
-    double local_field = 0;
-    for (auto link : connections)
-    {
-        if (link.out == idx && link.enabled)
-            local_field += eval(link.in); // rekurencja
-    }
-    nodes[idx].value = f(local_field);
-    nodes[idx].cached = true;
-    return nodes[idx].value;
 }
 
 std::ostream &operator<<(std::ostream &os, const Genotype &G)

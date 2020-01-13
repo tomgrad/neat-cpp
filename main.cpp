@@ -14,35 +14,21 @@ int main(/* int argv, char *argc[] */)
 
     const size_t inputs = 2, outputs = 1;
 
-    auto pool = Pool(12, inputs, outputs);
+    auto pool = Pool(1024, inputs, outputs);
 
-    for (auto i = 0; i < 100; ++i)
+    for (auto i = 0; i < 10000; ++i)
     {
+        auto error = pool.best().fitness;
+        if (error > -0.0001)
+            break;
+        cout << "Epoch: " << i << " error: " << error << '\n';
         pool.epoch();
-        pool.info();
     }
+    cout << pool.best() << "\n\n";
+    cout << pool.best()({0, 0})[0] << '\n';
+    cout << pool.best()({0, 1})[0] << '\n';
+    cout << pool.best()({1, 0})[0] << '\n';
+    cout << pool.best()({1, 1})[0] << '\n';
 
-    // pool.mate(0, 1);
-    // pool.mate(2, 3);
-
-    // pool.info();
-
-    // cout << p << endl;
-    // Genotype G1(inputs, outputs);
-    // Genotype G2 = G1;
-
-    // G.mutate_weights(0.8, 0.9);
-    // G1.mutate_add_node(0.5);
-    // G2.mutate_add_node(0.5);
-
-    // G.mutate_add_connection(0.5);
-    // cout << G1 << endl;
-    // cout << G2 << endl;
-
-    // vector<double> in{0, 1};
-    // auto out = G(in);
-
-    // for (auto o : out)
-    //     cout << o << ' ';
     cout << endl;
 }

@@ -1,13 +1,13 @@
 CXX=g++
-CXXFLAGS = --std=c++17
+CXXFLAGS = --std=c++17 -O2
 CXXFLAGS += -g -Wall -pedantic -Wextra
 
 
 neat : main.o genotype.o pool.o
 	$(CXX) -lpthread -o $@ $^
 
-#library.o : library.cpp
-#	$(CXX) $(CXXFLAGS) -c $<
+test : test.o genotype.o pool.o
+	$(CXX) -lpthread -o $@ $^
 
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) -c $<
